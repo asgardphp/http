@@ -1,5 +1,6 @@
 <?php
-namespace Asgard\Http\Filters;
+namespace Asgard\Http;
+
 class Filter {
 	protected $controller;
 	protected $params;
