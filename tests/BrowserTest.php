@@ -14,7 +14,7 @@ class BrowserTest extends \PHPUnit_Framework_TestCase {
 		$app['httpkernel'] = new \Asgard\Http\HttpKernel($app);
 		$app['hooks'] = new \Asgard\Hook\HooksManager($app);
 		$app['resolver'] = new \Asgard\Http\Resolver($app['cache']);
-		$app['resolver']->addRoute(new \Asgard\Http\ControllerRoute('', 'Asgard\Http\Tests\Fixtures\HomeController', 'home'));
+		$app['resolver']->addRoute(new \Asgard\Http\Route('', 'Asgard\Http\Tests\Fixtures\HomeController', 'home'));
 		$app->register('paginator', function($app, $args) {
 			return new \Asgard\Common\Paginator($args[0], $args[1], $args[2]);
 		});

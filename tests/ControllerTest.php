@@ -1,14 +1,15 @@
 <?php
-namespace Asgard\Hook\Tests;
+namespace Asgard\Http\Tests;
 
 use \Asgard\Http\Controller;
 use \Asgard\Http\ControllerRoute;
 use \Asgard\Http\Resolver;
+use \Asgard\Http\Route;
 use \Asgard\Http\Request;
 
 class ControllerTest extends \PHPUnit_Framework_TestCase {
 	public function testAnnotationsAndRouteFor() {
-		\Asgard\Container\Container::instance()['cache'] = new \Asgard\Cache\NullCache;
+		\Asgard\Container\Container::singleton()['cache'] = new \Asgard\Cache\NullCache;
 		$routes = \Asgard\Http\Tests\Fixtures\Controllers\FooController::fetchRoutes();
 		$route = $routes[0];
 		$this->assertEquals('page/:id', $route->getRoute());
@@ -25,7 +26,7 @@ class ControllerTest extends \PHPUnit_Framework_TestCase {
 		$app['hooks'] = new \Asgard\Hook\HooksManager($app);
 		$controller = new \Asgard\Http\Tests\Fixtures\Controllers\FooController();
 		$controller->addFilter(new _Filter);
-		$controller->run('page', $app);
+		$controller->run('page', new Request);
 
 		$this->assertEquals('bar', $controller->foo);
 		$this->assertEquals('foo', $controller->bar);
@@ -33,25 +34,31 @@ class ControllerTest extends \PHPUnit_Framework_TestCase {
 
 	public function testControllerRoute() {
 		$resolver = new Resolver(new \Asgard\Cache\NullCache);
-		$resolver->addRoute(new ControllerRoute('test', 'Asgard\Http\Tests\Fixtures\Controllers\FooController', 'page'));
+		$resolver->addRoute(new Route('test', 'Asgard\Http\Tests\Fixtures\Controllers\FooController', 'page'));
 		$request = new Request;
 		$request->url->setURL('test');
-		$callback = $resolver->getCallback($request);
-		$arguments = $resolver->getArguments($request);
+		$route = $resolver->getRoute($request);
+		$controller = $route->getController();
+		$action = $route->getAction();
 
 		$app = new \Asgard\Container\Container;
 		$app['hooks'] = new \Asgard\Hook\HooksManager($app);
-		$response = call_user_func_array($callback, array_merge($arguments, [$app, $request]));
-		$this->assertEquals('hello!', $response->content);
+
+		$controller = new $controller();
+		$controller->setApp($app);
+
+		$response = $controller->run($action, $request);
+
+		$this->assertEquals('hello!', $response->getContent());
 	}
 }
 
 class _Filter extends \Asgard\Http\Filter {
-	public function before($chain, $controller, $request) {
+	public function before(\Asgard\Http\Controller $controller, \Asgard\Http\Request $request) {
 		$controller->foo = 'bar';
 	}
 
-	public function after($chain, $controller, &$result) {
+	public function after(\Asgard\Http\Controller $controller, \Asgard\Http\Request $request, &$result) {
 		$controller->bar = 'foo';
 	}
 }

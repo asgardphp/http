@@ -9,26 +9,26 @@ class ResolverTest extends \PHPUnit_Framework_TestCase {
 	public function testGetRoute() {
 		$cache = new \Asgard\Cache\NullCache;
 		$resolver = new Resolver($cache);
-		$route = new Route('test/:id/plpl', 'callback', [1,2,3]);
+		$route = new Route('test/:id/plpl', 'controller', 'action');
 
 		$resolver->addRoute($route);
 
 		$request = new Request;
 		$request->url->setURL('test/plpl');
-		$this->assertEquals(null, $resolver->getCallback($request));
+		$this->assertEquals(null, $resolver->getRoute($request));
 		$request->url->setURL('test/1/plpl');
-		$this->assertEquals('callback', $resolver->getCallback($request));
-		$this->assertEquals([1,2,3], $resolver->getArguments($request));
+		$this->assertEquals('controller', $resolver->getRoute($request)->getController());
+		$this->assertEquals('action', $resolver->getRoute($request)->getAction());
 	}
 
 	public function testSortRoutes() {
 		$cache = new \Asgard\Cache\NullCache;
 		$resolver = new Resolver($cache);
 
-		$resolver->addRoute(new Route('test', null));
-		$resolver->addRoute(new Route(':a', null));
-		$resolver->addRoute(new Route('test/abc', null));
-		$resolver->addRoute(new Route('test/:id/plpl', null));
+		$resolver->addRoute(new Route('test', '', ''));
+		$resolver->addRoute(new Route(':a', '', ''));
+		$resolver->addRoute(new Route('test/abc', '', ''));
+		$resolver->addRoute(new Route('test/:id/plpl', '', ''));
 
 		$routes = $resolver->sortRoutes()->getRoutes();
 
@@ -49,7 +49,7 @@ class ResolverTest extends \PHPUnit_Framework_TestCase {
 
 		$request = new Request;
 		$request->url->setURL('test/1/plpl');
-		$resolver->getCallback($request);
+		$resolver->getRoute($request);
 		$this->assertEquals('1', $request->getParam('id'));
 	}
 
