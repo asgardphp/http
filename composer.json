@@ -15,6 +15,7 @@
         "asgard/common": "dev-master",
         "asgard/hook": "dev-master",
         "asgard/container": "dev-master",
-        "asgard/debug": "dev-master"
+        "asgard/debug": "dev-master",
+        "asgard/templating": "dev-master"
     }
 }
