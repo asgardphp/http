@@ -9,7 +9,7 @@ require_once __DIR__.'/Annotations/Route.php';
  * Annotations reader.
  * @author Michel Hognerud <michel@hognerud.net>
 */
-class AnnotationsReader {
+class AnnotationReader {
 	/**
 	 * Cache instance.
 	 * @var \Doctrine\Common\Cache\Cache
