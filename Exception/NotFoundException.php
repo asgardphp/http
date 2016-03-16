@@ -1,5 +1,5 @@
 <?php
-namespace Asgard\Http\Exceptions;
+namespace Asgard\Http\Exception;
 
 /**
  * NotFound (404) exceptions.

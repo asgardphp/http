@@ -1,5 +1,5 @@
 <?php
-namespace Asgard\Http\Filters;
+namespace Asgard\Http\Filter;
 
 /**
  * Page layout filter. Adds a layout to the reponse.

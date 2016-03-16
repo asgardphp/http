@@ -1,5 +1,5 @@
 <?php
-namespace Asgard\Http\Annotations;
+namespace Asgard\Http\Annotation;
 
 /**
  * @Annotation
